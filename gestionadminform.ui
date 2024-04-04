@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GestionAdminForm</class>
+ <widget class="QMainWindow" name="GestionAdminForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuProduits">
+    <property name="title">
+     <string>Produits</string>
+    </property>
+    <addaction name="actionAddProduct"/>
+    <addaction name="actionUpdateProduct"/>
+    <addaction name="actionDeleteProduct"/>
+    <addaction name="actionListerProduct"/>
+    <addaction name="actionSearchProduct"/>
+   </widget>
+   <widget class="QMenu" name="menuServeurs">
+    <property name="title">
+     <string>Serveurs</string>
+    </property>
+    <addaction name="actionAddServer"/>
+    <addaction name="actionUpdateServer"/>
+    <addaction name="actionDeleteServer"/>
+    <addaction name="actionListServer"/>
+   </widget>
+   <widget class="QMenu" name="menuRecettes">
+    <property name="title">
+     <string>Recettes</string>
+    </property>
+    <addaction name="actionAddRecette"/>
+    <addaction name="actionUpdateRecette"/>
+    <addaction name="actionDeleteRecette"/>
+    <addaction name="actionListRecette"/>
+   </widget>
+   <widget class="QMenu" name="menuLogOut">
+    <property name="title">
+     <string>Plus</string>
+    </property>
+    <addaction name="actionLogOut"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menuCommands">
+    <property name="title">
+     <string>Commands</string>
+    </property>
+    <addaction name="actionListCommand"/>
+   </widget>
+   <addaction name="menuProduits"/>
+   <addaction name="menuServeurs"/>
+   <addaction name="menuCommands"/>
+   <addaction name="menuRecettes"/>
+   <addaction name="menuLogOut"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAddProduct">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionUpdateProduct">
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionDeleteProduct">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionListerProduct">
+   <property name="text">
+    <string>Lister</string>
+   </property>
+  </action>
+  <action name="actionAddServer">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionUpdateServer">
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionDeleteServer">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionListServer">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+  <action name="actionSearchProduct">
+   <property name="text">
+    <string>Search</string>
+   </property>
+  </action>
+  <action name="actionLogOut">
+   <property name="text">
+    <string>LogOut</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionAddRecette">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionUpdateRecette">
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionDeleteRecette">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionListRecette">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+  <action name="actionListCommand">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

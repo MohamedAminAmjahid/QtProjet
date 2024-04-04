@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GestionServeurForm</class>
+ <widget class="QMainWindow" name="GestionServeurForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCommandes">
+    <property name="title">
+     <string>Commands</string>
+    </property>
+    <addaction name="actionAddCommands"/>
+    <addaction name="actionUpdateCommands"/>
+    <addaction name="actionDeleteCommands"/>
+    <addaction name="actionListCommands"/>
+    <addaction name="actionSearchCommands"/>
+   </widget>
+   <widget class="QMenu" name="menuRecette">
+    <property name="title">
+     <string>Recette</string>
+    </property>
+    <addaction name="actionListRecette"/>
+   </widget>
+   <widget class="QMenu" name="menuPlus">
+    <property name="title">
+     <string>Plus</string>
+    </property>
+    <addaction name="actionLogOut"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <addaction name="menuCommandes"/>
+   <addaction name="menuRecette"/>
+   <addaction name="menuPlus"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAddCommands">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionUpdateCommands">
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionDeleteCommands">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionListCommands">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+  <action name="actionSearchCommands">
+   <property name="text">
+    <string>Search</string>
+   </property>
+  </action>
+  <action name="actionLogOut">
+   <property name="text">
+    <string>LogOut</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionListRecette">
+   <property name="text">
+    <string>List</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

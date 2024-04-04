@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SearchProductDialog</class>
+ <widget class="QDialog" name="SearchProductDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>designation</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>prix</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>quantitestock</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit_keyword"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QListWidget" name="listWidget_results"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButton_search">
+       <property name="text">
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
