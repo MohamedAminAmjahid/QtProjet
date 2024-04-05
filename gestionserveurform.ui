@@ -28,14 +28,13 @@
      <string>Commands</string>
     </property>
     <addaction name="actionAddCommands"/>
-    <addaction name="actionUpdateCommands"/>
     <addaction name="actionDeleteCommands"/>
     <addaction name="actionListCommands"/>
     <addaction name="actionSearchCommands"/>
    </widget>
    <widget class="QMenu" name="menuRecette">
     <property name="title">
-     <string>Recette</string>
+     <string>Daily Earnings</string>
     </property>
     <addaction name="actionListRecette"/>
    </widget>
@@ -46,19 +45,20 @@
     <addaction name="actionLogOut"/>
     <addaction name="actionClose"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+   </widget>
    <addaction name="menuCommandes"/>
    <addaction name="menuRecette"/>
+   <addaction name="menuAbout"/>
    <addaction name="menuPlus"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAddCommands">
    <property name="text">
     <string>Add</string>
-   </property>
-  </action>
-  <action name="actionUpdateCommands">
-   <property name="text">
-    <string>Update</string>
    </property>
   </action>
   <action name="actionDeleteCommands">

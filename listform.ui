@@ -14,7 +14,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="saveXML">
+      <property name="text">
+       <string>Save XMl</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QTableWidget" name="tableWidget"/>
     </item>

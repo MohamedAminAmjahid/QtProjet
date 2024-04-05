@@ -20,17 +20,17 @@
       <widget class="QComboBox" name="comboBox">
        <item>
         <property name="text">
-         <string>designation</string>
+         <string>Description</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>prix</string>
+         <string>price</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>quantitestock</string>
+         <string>Quantity</string>
         </property>
        </item>
       </widget>

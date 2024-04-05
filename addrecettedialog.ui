@@ -29,7 +29,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Date de la journée</string>
+        <string>Date</string>
        </property>
       </widget>
      </item>
@@ -39,7 +39,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Total par journée</string>
+        <string>Total per day</string>
        </property>
       </widget>
      </item>

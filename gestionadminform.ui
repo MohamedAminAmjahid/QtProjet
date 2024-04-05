@@ -25,7 +25,7 @@
    </property>
    <widget class="QMenu" name="menuProduits">
     <property name="title">
-     <string>Produits</string>
+     <string>Products</string>
     </property>
     <addaction name="actionAddProduct"/>
     <addaction name="actionUpdateProduct"/>
@@ -35,7 +35,7 @@
    </widget>
    <widget class="QMenu" name="menuServeurs">
     <property name="title">
-     <string>Serveurs</string>
+     <string>Servers</string>
     </property>
     <addaction name="actionAddServer"/>
     <addaction name="actionUpdateServer"/>
@@ -44,12 +44,15 @@
    </widget>
    <widget class="QMenu" name="menuRecettes">
     <property name="title">
-     <string>Recettes</string>
+     <string>Daily Earnings</string>
     </property>
     <addaction name="actionAddRecette"/>
     <addaction name="actionUpdateRecette"/>
     <addaction name="actionDeleteRecette"/>
     <addaction name="actionListRecette"/>
+    <addaction name="actionTotal_per_day"/>
+    <addaction name="actionTotal_per_month"/>
+    <addaction name="actionTotal_per_server_and_date"/>
    </widget>
    <widget class="QMenu" name="menuLogOut">
     <property name="title">
@@ -62,12 +65,28 @@
     <property name="title">
      <string>Commands</string>
     </property>
+    <addaction name="actionUpdateCommand"/>
+    <addaction name="actionDeleteCommand"/>
     <addaction name="actionListCommand"/>
+   </widget>
+   <widget class="QMenu" name="menuLanguages">
+    <property name="title">
+     <string>Languages</string>
+    </property>
+    <addaction name="actionFrench"/>
+    <addaction name="actionEnglish"/>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
    </widget>
    <addaction name="menuProduits"/>
    <addaction name="menuServeurs"/>
    <addaction name="menuCommands"/>
    <addaction name="menuRecettes"/>
+   <addaction name="menuLanguages"/>
+   <addaction name="menuAbout"/>
    <addaction name="menuLogOut"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -88,7 +107,7 @@
   </action>
   <action name="actionListerProduct">
    <property name="text">
-    <string>Lister</string>
+    <string>List</string>
    </property>
   </action>
   <action name="actionAddServer">
@@ -113,12 +132,12 @@
   </action>
   <action name="actionSearchProduct">
    <property name="text">
-    <string>Search</string>
+    <string>Search Product</string>
    </property>
   </action>
   <action name="actionLogOut">
    <property name="text">
-    <string>LogOut</string>
+    <string>Log Out</string>
    </property>
   </action>
   <action name="actionClose">
@@ -149,6 +168,41 @@
   <action name="actionListCommand">
    <property name="text">
     <string>List</string>
+   </property>
+  </action>
+  <action name="actionTotal_per_day">
+   <property name="text">
+    <string>Total per day</string>
+   </property>
+  </action>
+  <action name="actionTotal_per_month">
+   <property name="text">
+    <string>Total per month</string>
+   </property>
+  </action>
+  <action name="actionTotal_per_server_and_date">
+   <property name="text">
+    <string>Total per server and date</string>
+   </property>
+  </action>
+  <action name="actionDeleteCommand">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionUpdateCommand">
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionFrench">
+   <property name="text">
+    <string>French</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
    </property>
   </action>
  </widget>

@@ -6,6 +6,7 @@
 #include <listform.h>
 #include <mainwindow.h>
 #include <updatecommanddialog.h>
+#include <QTranslator>
 
 GestionServeurForm::GestionServeurForm(QWidget *parent, DatabaseManager *databasemanager)
     : QMainWindow(parent)
@@ -14,6 +15,24 @@ GestionServeurForm::GestionServeurForm(QWidget *parent, DatabaseManager *databas
     settings("www.ensiie.fr", "Project")
 {
     ui->setupUi(this);
+    QString language = settings.value("language").toString();
+    QTranslator translator;
+
+    if (language == "French") {
+        if (translator.load("../GestionRestaurant/translations/gestionrestaurant_fr_FR.qm")) {
+            qApp->installTranslator(&translator);
+        } else {
+            qDebug() << "Erreur : Impossible de charger le fichier de traduction pour le français.";
+        }
+    } else{
+        if (translator.load("../GestionRestaurant/translations/gestionrestaurant_en_US.qm")) {
+            qApp->installTranslator(&translator);
+        } else {
+            qDebug() << "Erreur : Impossible de charger le fichier de traduction pour l'anglais.";
+        }
+    }
+
+    ui->retranslateUi(this);
 }
 
 GestionServeurForm::~GestionServeurForm()
@@ -35,7 +54,7 @@ void GestionServeurForm::on_actionAddCommands_triggered()
 
         int stockQuantity = databaseManager_.getStockQuantity(selectedProductId);
         if (stockQuantity < quantity) {
-            QMessageBox::critical(this, "Error", "Not enough stock!");
+            QMessageBox::critical(this, tr("Error"), tr("Not enough stock!"));
             return;
         }
 
@@ -55,7 +74,7 @@ void GestionServeurForm::on_actionListCommands_triggered()
     QList<Commande> commandList = databaseManager_.selectCommands();
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"Code commande", "Nom Produit", "Quantité", "Prix unitaire", "Total", "Date"};
+    QStringList columnNames = {tr("Code command"), tr("Name Product"), tr("Quantity"), tr("Unit Price"), tr("Total"), tr("Date")};
 
     int idServeur = settings.value("ServerID").toInt();
 
@@ -89,67 +108,31 @@ void GestionServeurForm::on_actionLogOut_triggered()
     mainWindow->show();
 }
 
-
-void GestionServeurForm::on_actionUpdateCommands_triggered()
-{
-    UpdateCommandDialog updateCommandDialog(this);
-    updateCommandDialog.exec();
-
-    Commande updatedCommand = updateCommandDialog.getUpdatedCommand();
-    if (updatedCommand.codeCommande() != "") {
-        QList<QString> commandData = updateCommandDialog.getCommandData();
-
-        QString selectedCommandCode = commandData.at(0);
-        int idProduit = commandData.at(1).toInt();
-        int quantite = commandData.at(2).toInt();
-        QDate dateCommande = QDate::fromString(commandData.at(3), "yyyy-MM-dd");
-
-        int quantite2 = updatedCommand.quantite();
-        if(quantite - quantite2 < 0){
-            databaseManager_.setQuantite(QString::number(idProduit), quantite2 - quantite);
-        }else if (quantite - quantite2 > 0) {
-            int stockQuantity = databaseManager_.getStockQuantity(QString::number(idProduit));
-            if (stockQuantity < quantite - quantite2 ) {
-                QMessageBox::critical(this, "Error", "Not enough stock!");
-                return;
-            }
-            else {
-                databaseManager_.setQuantite(QString::number(idProduit), quantite2 - quantite);
-            }
-        }
-
-        if (!databaseManager_.updateCommand(selectedCommandCode, idProduit, quantite, dateCommande)) {
-            qDebug() << "Failed to insert product!";
-        } else {
-            qDebug() << "Product inserted successfully!";
-        }
-    }
-}
-
 void GestionServeurForm::on_actionDeleteCommands_triggered()
 {
-    UpdateCommandDialog updateCommandDialog(this);
+    int idServeur = settings.value("ServerID").toInt();
+    UpdateCommandDialog updateCommandDialog(this, idServeur);
     updateCommandDialog.setFieldsReadOnly(true);
-    updateCommandDialog.exec();
 
-    Commande updatedCommand = updateCommandDialog.getUpdatedCommand();
-    if (updatedCommand.codeCommande() != "") {
-        QString commandNumber = updatedCommand.codeCommande();
+    if (updateCommandDialog.exec() == QDialog::Accepted) {
+        Commande updatedCommand = updateCommandDialog.getUpdatedCommand();
+        if (updatedCommand.codeCommande() != "") {
+            QString commandNumber = updatedCommand.codeCommande();
 
-        if (databaseManager_.deleteCommandByNumber(commandNumber)) {
-            QMessageBox::information(this, "Suppression réussie", "La commande a été supprimée avec succès.");
-        } else {
-            QMessageBox::warning(this, "Erreur", "La commande n'a pas pu être supprimée.");
+            if (databaseManager_.deleteCommandByNumber(commandNumber)) {
+                QMessageBox::information(this, tr("Deleted Successfuly"), tr("The command has been successfully deleted."));
+            } else {
+                QMessageBox::warning(this, tr("Error"), tr("The command could not be deleted."));
+            }
         }
     }
-}
 
+}
 
 void GestionServeurForm::on_actionClose_triggered()
 {
     this->close();
 }
-
 
 void GestionServeurForm::on_actionListRecette_triggered()
 {
@@ -163,7 +146,7 @@ void GestionServeurForm::on_actionListRecette_triggered()
     QList<QPair<QPair<int, QString>, QPair<double, QString>>> recettes = databaseManager_.selectRecettesWithServerLoginsAndDetails(idServeur);
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"Total Par Journee", "Date"};
+    QStringList columnNames = {tr("Total per day"), tr("Date")};
 
     for (const auto &recette : recettes) {
         QStringList rowData;

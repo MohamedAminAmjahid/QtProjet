@@ -12,19 +12,38 @@
 #include <addrecettedialog.h>
 #include <recette.h>
 #include <updaterecettedialog.h>
+#include <QInputDialog>
+#include <monthyeardialog.h>
+#include <searchserveranddaterecettedialog.h>
+#include <updatecommanddialog.h>
+#include <QTranslator>
+#include <QDir>
 
-GestionAdminForm::GestionAdminForm(QWidget *parent, DatabaseManager *databasemanager)
+GestionAdminForm::GestionAdminForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::GestionAdminForm),
-    databaseManager_(databasemanager)
+    settings_("www.ensiie.fr", "Project")
 {
     ui->setupUi(this);
 
-    /*if (!databaseManager_.connectToDatabase("bd")) {
-        qDebug() << "Failed to connect to the database!";
-        // Gérer l'échec de connexion ici
-        return;
-    }*/
+    QString language = settings_.value("language").toString();
+    QTranslator translator;
+
+    if (language == "French") {
+        if (translator.load("../GestionRestaurant/translations/gestionrestaurant_fr_FR.qm")) {
+            qApp->installTranslator(&translator);
+        } else {
+            qDebug() << "Erreur : Impossible de charger le fichier de traduction pour le français.";
+        }
+    } else{
+        if (translator.load("../GestionRestaurant/translations/gestionrestaurant_en_US.qm")) {
+            qApp->installTranslator(&translator);
+        } else {
+            qDebug() << "Erreur : Impossible de charger le fichier de traduction pour l'anglais.";
+        }
+    }
+
+    ui->retranslateUi(this);
 }
 
 GestionAdminForm::~GestionAdminForm()
@@ -37,7 +56,8 @@ void GestionAdminForm::on_actionListerProduct_triggered()
     QList<Produit> productList = databaseManager_.selectProducts();
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"Designation", "Prix", "Quantite en stock"};
+    QStringList columnNames = {tr("Description"), tr("Price"), tr("Quantity")};
+
 
     for (const Produit &product : productList) {
         QStringList rowData;
@@ -58,10 +78,10 @@ void GestionAdminForm::on_actionListServer_triggered()
     QList<Serveur> serverList = databaseManager_.selectServers();
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"Login", "CIN"};
+    QStringList columnNames = {tr("Login"), tr("CIN")};
     for (const Serveur &server : serverList) {
         QStringList rowData;
-        rowData << server.getLogin() << server.getCin(); // Assuming there are login() and cin() methods in Serveur class
+        rowData << server.getLogin() << server.getCin();
         dataList << rowData;
     }
 
@@ -75,34 +95,25 @@ void GestionAdminForm::on_actionListServer_triggered()
 
 void GestionAdminForm::on_actionAddServer_triggered()
 {
-    QStringList columnNames = {"Login", "Password", "Cin"};
+    QStringList columnNames = {tr("Login"), tr("Password"), tr("Cin")};
 
-    // Créer une instance du dialogue d'ajout de produit
     AddDialog addServerDialog(columnNames, this);
 
-    // Exécuter le dialogue modale pour récupérer les données du produit
     if (addServerDialog.exec() == QDialog::Accepted) {
-        // Obtenir les données du produit à partir du dialogue
         QList<QString> serverData = addServerDialog.getProductData();
 
-        // Vérifier si toutes les données ont été saisies
         if (serverData.size() == columnNames.size()) {
-            // Insérer le produit dans la base de données
             QString login = serverData.at(0);
             QString pwd = serverData.at(1);
             QString cin = serverData.at(2);
 
-            // Insérez le produit en utilisant votre méthode insertProduct dans DatabaseManager
             if (!databaseManager_.insertPerson(login, pwd, cin, "Server")) {
-                qDebug() << "Failed to insert product!";
-                // Gérer l'échec de l'insertion du produit ici
+                qDebug() << "Failed to insert server!";
             } else {
-                qDebug() << "Product inserted successfully!";
-                // Gérer le succès de l'insertion du produit ici
+                qDebug() << "Server inserted successfully!";
             }
         } else {
-            qDebug() << "Incomplete product data!";
-            // Gérer le cas où les données du produit ne sont pas complètes ici
+            qDebug() << "Incomplete server data!";
         }
     }
 }
@@ -110,31 +121,22 @@ void GestionAdminForm::on_actionAddServer_triggered()
 
 void GestionAdminForm::on_actionAddProduct_triggered()
 {
-    // Définir les noms des colonnes pour le formulaire
-    QStringList columnNames = {"Désignation", "Prix", "Quantité en stock"};
+    QStringList columnNames = {tr("Description"), tr("Price"), tr("Quantity")};
 
-    // Créer une instance du dialogue d'ajout de produit
     AddDialog addProductDialog(columnNames, this);
 
-    // Exécuter le dialogue modale pour récupérer les données du produit
     if (addProductDialog.exec() == QDialog::Accepted) {
-        // Obtenir les données du produit à partir du dialogue
         QList<QString> productData = addProductDialog.getProductData();
 
-        // Vérifier si toutes les données ont été saisies
         if (productData.size() == columnNames.size()) {
-            // Insérer le produit dans la base de données
             QString designation = productData.at(0);
             double prix = productData.at(1).toDouble();
             int quantiteStock = productData.at(2).toInt();
 
-            // Insérez le produit en utilisant votre méthode insertProduct dans DatabaseManager
             if (!databaseManager_.insertProduct(designation, prix, quantiteStock)) {
                 qDebug() << "Failed to insert product!";
-                // Gérer l'échec de l'insertion du produit ici
             } else {
                 qDebug() << "Product inserted successfully!";
-                // Gérer le succès de l'insertion du produit ici
             }
         } else {
             qDebug() << "Incomplete product data!";
@@ -156,9 +158,9 @@ void GestionAdminForm::on_actionUpdateProduct_triggered()
         double newPrice = productData.at(1).toDouble();
         int newQuantity = productData.at(2).toInt();
         if (!databaseManager_.updateProduct(selectedProductCode, newDesignation, newPrice, newQuantity)) {
-            qDebug() << "Failed to insert product!";
+            qDebug() << "Failed to update product!";
         } else {
-            qDebug() << "Product inserted successfully!";
+            qDebug() << "Product updated successfully!";
         }
     }
 
@@ -178,21 +180,16 @@ void GestionAdminForm::on_actionDeleteProduct_triggered()
     if (updateDialog->exec() == QDialog::Accepted) {
         QString selectedProductCode = updateDialog->getSelectedCode();
 
-
-        QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation", "Are you sure you want to delete this product?",
-                                                                         QMessageBox::Yes | QMessageBox::No);
+        QMessageBox::StandardButton confirmation = QMessageBox::question(this, tr("Confirmation"), tr("Are you sure you want to delete this product?"), QMessageBox::Yes | QMessageBox::No);
         if (confirmation == QMessageBox::Yes) {
-
-
             if (databaseManager_.deleteProduct(selectedProductCode)) {
-                QMessageBox::information(this, "Success", "Product deleted successfully.");
+                QMessageBox::information(this, tr("Success"), tr("Product deleted successfully."));
             } else {
-                QMessageBox::critical(this, "Error", "Failed to delete product.");
+                QMessageBox::critical(this, tr("Error"), tr("Failed to delete product."));
             }
         }
     }
 }
-
 
 void GestionAdminForm::on_actionUpdateServer_triggered()
 {
@@ -209,9 +206,9 @@ void GestionAdminForm::on_actionUpdateServer_triggered()
         QString newCin = productData.at(2);
 
         if (!databaseManager_.updateServer(selectedServerCode, newLogin, newPassword, newCin)) {
-            qDebug() << "Failed to insert product!";
+            qDebug() << "Failed to update server!";
         } else {
-            qDebug() << "Product inserted successfully!";
+            qDebug() << "Server updated successfully!";
         }
     }
 
@@ -227,14 +224,14 @@ void GestionAdminForm::on_actionDeleteServer_triggered()
     if (updateServerDialog->exec() == QDialog::Accepted) {
         QString selectedServerCode = updateServerDialog->getSelectedCode();
 
-        QMessageBox::StandardButton confirmation = QMessageBox::question(this, "Confirmation", "Are you sure you want to delete this server?",
+        QMessageBox::StandardButton confirmation = QMessageBox::question(this, tr("Confirmation"), tr("Are you sure you want to delete this server?"),
                                                                          QMessageBox::Yes | QMessageBox::No);
         if (confirmation == QMessageBox::Yes) {
 
             if (databaseManager_.deleteServer(selectedServerCode)) {
-                QMessageBox::information(this, "Success", "Product deleted successfully.");
+                QMessageBox::information(this, tr("Success"), tr("Server deleted successfully."));
             } else {
-                QMessageBox::critical(this, "Error", "Failed to delete product.");
+                QMessageBox::critical(this, tr("Error"), tr("Failed to delete server."));
             }
         }
     }
@@ -243,8 +240,7 @@ void GestionAdminForm::on_actionDeleteServer_triggered()
 void GestionAdminForm::on_actionSearchProduct_triggered()
 {
     SearchProductDialog searchProductDialog(this);
-    if (searchProductDialog.exec() == QDialog::Accepted) {
-    }
+    searchProductDialog.exec();
 }
 
 void GestionAdminForm::on_actionLogOut_triggered()
@@ -267,7 +263,6 @@ void GestionAdminForm::on_actionAddRecette_triggered()
     AddRecetteDialog addRecetteDialog(this, &databaseManager_);
 
     if (addRecetteDialog.exec() == QDialog::Accepted) {
-        // Obtenir l'idServeur sélectionné à partir du dialogue
         int idServeur = addRecetteDialog.getSelectedServeurId();
         QDate date = addRecetteDialog.getRecetteDate();
         double totalParJournee = addRecetteDialog.getTotalParJournee();
@@ -285,7 +280,7 @@ void GestionAdminForm::on_actionListRecette_triggered()
     QList<QPair<QPair<int, QString>, QPair<double, QString>>> recettes = databaseManager_.selectRecettesWithServerLoginsAndDetails();
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"ID Serveur", "Login Serveur", "Total Par Journee", "Date"};
+    QStringList columnNames = {tr("ID Server"), tr("Login Server"), tr("Total Per Day"), tr("Date")};
 
     for (const auto &recette : recettes) {
         QStringList rowData;
@@ -303,7 +298,7 @@ void GestionAdminForm::on_actionListCommand_triggered()
     QList<Commande> commandList = databaseManager_.selectCommands();
 
     QList<QStringList> dataList;
-    QStringList columnNames = {"Code commande", "Id Serveur","Nom Produit", "Quantité", "Prix unitaire", "Total", "Date"};
+    QStringList columnNames = {tr("Code command"), tr("Id Server"),tr("Name Product"), tr("Quantity"), tr("Unit Price"), tr("Total"), tr("Date")};
 
     for (const Commande &command : commandList) {
         QString productName = databaseManager_.getProductName(command.idProduit());
@@ -335,8 +330,6 @@ void GestionAdminForm::on_actionUpdateRecette_triggered()
     if (updateRecetteDialog.exec() == QDialog::Accepted) {
         int selectedCodeRecette = updateRecetteDialog.getSelectedCodeRecette();
         int selectedIdServeur = updateRecetteDialog.getSelectedIdServeur();
-        double newTotalParJournee = updateRecetteDialog.getNouveauTotalParJournee();
-        QDate newDate = updateRecetteDialog.getNouvelleDate();
 
         if (!databaseManager_.updateRecette(selectedCodeRecette, selectedIdServeur)) {
             qDebug() << "Failed to update recette!";
@@ -350,25 +343,22 @@ void GestionAdminForm::on_actionDeleteRecette_triggered()
 {
     QList<int> codeRecettes = databaseManager_.selectRecetteCodes();
 
-    // Afficher le UpdateRecetteDialog pour sélectionner la recette à supprimer
     UpdateRecetteDialog deleteRecetteDialog(this);
-    deleteRecetteDialog.disableUIElements(); // Désactiver les éléments de l'interface utilisateur
-    deleteRecetteDialog.setDialogTitle("Delete Recette"); // Définir le titre du dialogue
+    deleteRecetteDialog.disableUIElements();
+    deleteRecetteDialog.setDialogTitle(tr("Delete Daily Earning"));
     deleteRecetteDialog.setCodeRecetteOptions(codeRecettes);
 
     if (deleteRecetteDialog.exec() == QDialog::Accepted) {
         int selectedCodeRecette = deleteRecetteDialog.getSelectedCodeRecette();
 
-        // Demander confirmation avant de supprimer la recette
         QMessageBox::StandardButton confirmation;
-        confirmation = QMessageBox::question(this, "Delete Recette", "Are you sure you want to delete this recette?",
+        confirmation = QMessageBox::question(this, tr("Delete daily earning"), tr("Are you sure you want to delete this daily earning?"),
                                              QMessageBox::Yes|QMessageBox::No);
         if (confirmation == QMessageBox::No) {
             qDebug() << "Operation canceled.";
             return;
         }
 
-        // Supprimer la recette
         if (!databaseManager_.deleteRecette(selectedCodeRecette)) {
             qDebug() << "Failed to delete recette!";
         } else {
@@ -377,3 +367,111 @@ void GestionAdminForm::on_actionDeleteRecette_triggered()
     }
 }
 
+void GestionAdminForm::on_actionTotal_per_day_triggered()
+{
+    QDate selectedDate = QDate::currentDate();
+    selectedDate = QDate::fromString(QInputDialog::getText(this, tr("Enter Date"), tr("Enter date (YYYY-MM-DD):"), QLineEdit::Normal, selectedDate.toString("yyyy-MM-dd")), "yyyy-MM-dd");
+
+    QString total = databaseManager_.selectRecettesForDate(selectedDate);
+
+    QMessageBox::information(this, tr("Total for ") + selectedDate.toString("yyyy-MM-dd"), tr("Total for the day: ") + total);
+}
+
+void GestionAdminForm::on_actionTotal_per_month_triggered()
+{
+    MonthYearDialog dialog(this);
+    if (dialog.exec() == QDialog::Accepted) {
+        QDate selectedDate = dialog.selectedDate();
+        QString totalRecettesMois = databaseManager_.selectRecettesForMonth(selectedDate);
+        QMessageBox::information(this, tr("Total Daily Earnings for Month"), tr("Total Daily Earnings for Month: ") + totalRecettesMois);
+    }
+}
+
+void GestionAdminForm::on_actionTotal_per_server_and_date_triggered()
+{
+    SearchServerAndDateRecetteDialog searchDialog(this);
+
+    searchDialog.exec();
+}
+
+void GestionAdminForm::on_actionDeleteCommand_triggered()
+{
+    UpdateCommandDialog updateCommandDialog(this, 1);
+    updateCommandDialog.setFieldsReadOnly(true);
+    if (updateCommandDialog.exec() == QDialog::Accepted) {
+        Commande updatedCommand = updateCommandDialog.getUpdatedCommand();
+        if (updatedCommand.codeCommande() != "") {
+            QString commandNumber = updatedCommand.codeCommande();
+
+            if (databaseManager_.deleteCommandByNumber(commandNumber)) {
+                QMessageBox::information(this, tr("Deleted Successfully"), tr("Command has been successfully deleted."));
+            } else {
+                QMessageBox::warning(this, tr("Error"), tr("The command could not be deleted."));
+            }
+        }
+    }
+
+}
+
+void GestionAdminForm::on_actionUpdateCommand_triggered()
+{
+    UpdateCommandDialog updateCommandDialog(this, 1);
+    if (updateCommandDialog.exec() == QDialog::Accepted) {
+        Commande updatedCommand = updateCommandDialog.getUpdatedCommand();
+        if (updatedCommand.codeCommande() != "") {
+            QList<QString> commandData = updateCommandDialog.getCommandData();
+
+            QString selectedCommandCode = commandData.at(0);
+            int idProduit = commandData.at(1).toInt();
+            int quantite = commandData.at(2).toInt();
+            QDate dateCommande = QDate::fromString(commandData.at(3), "yyyy-MM-dd");
+
+            int quantite2 = updatedCommand.quantite();
+            if(quantite - quantite2 < 0){
+                databaseManager_.setQuantite(QString::number(idProduit), quantite2 - quantite);
+            }else if (quantite - quantite2 > 0) {
+                int stockQuantity = databaseManager_.getStockQuantity(QString::number(idProduit));
+                if (stockQuantity < quantite - quantite2 ) {
+                    QMessageBox::critical(this, tr("Error"), tr("Not enough stock!"));
+                    return;
+                }
+                else {
+                    databaseManager_.setQuantite(QString::number(idProduit), quantite2 - quantite);
+                }
+            }
+
+            if (!databaseManager_.updateCommand(selectedCommandCode, idProduit, quantite, dateCommande)) {
+                qDebug() << "Failed to update command!";
+            } else {
+                qDebug() << "Command Updated successfully!";
+            }
+        }
+    }
+
+}
+
+void GestionAdminForm::on_actionFrench_triggered()
+{
+    settings_.setValue("language", "French");
+
+    QTranslator translator;
+    if(translator.load("../GestionRestaurant/translations/gestionrestaurant_fr_FR.qm")) {
+        qApp->installTranslator(&translator);
+        ui->retranslateUi(this);
+    } else {
+        qDebug() << "Erreur : Impossible de charger le fichier de traduction pour le français.";
+    }
+}
+
+
+
+void GestionAdminForm::on_actionEnglish_triggered()
+{
+    settings_.setValue("language", "English");
+
+    QTranslator translator;
+    translator.load("../GestionRestaurant/translations/gestionrestaurant_en_US.qm");
+    qApp->installTranslator(&translator);
+
+    ui->retranslateUi(this);
+}

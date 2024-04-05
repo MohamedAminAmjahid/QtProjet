@@ -20,10 +20,12 @@ SOURCES += \
     listform.cpp \
     main.cpp \
     mainwindow.cpp \
+    monthyeardialog.cpp \
     personne.cpp \
     produit.cpp \
     recette.cpp \
     searchproductdialog.cpp \
+    searchserveranddaterecettedialog.cpp \
     serveur.cpp \
     updatecommanddialog.cpp \
     updatedialog.cpp \
@@ -41,10 +43,12 @@ HEADERS += \
     gestionserveurform.h \
     listform.h \
     mainwindow.h \
+    monthyeardialog.h \
     personne.h \
     produit.h \
     recette.h \
     searchproductdialog.h \
+    searchserveranddaterecettedialog.h \
     serveur.h \
     updatecommanddialog.h \
     updatedialog.h \
@@ -59,11 +63,28 @@ FORMS += \
     gestionserveurform.ui \
     listform.ui \
     mainwindow.ui \
+    monthyeardialog.ui \
     searchproductdialog.ui \
+    searchserveranddaterecettedialog.ui \
     updatecommanddialog.ui \
     updatedialog.ui \
     updaterecettedialog.ui \
     updateserverdialog.ui
+# Définition des fichiers de traduction --------------------------------------------------
+TRANSLATIONS += Translations/gestionrestaurant_en_US.ts \
+                Translations/gestionrestaurant_fr_FR.ts
+
+# Génération des fichiers de traduction --------------------------------------------------
+translate.target = translate
+translate.depends = $$ALLSOURCES
+translate.commands = lupdate $$TARGET.pro
+QMAKE_EXTRA_TARGETS += translate
+
+# Compilation des fichiers de traduction --------------------------------------------------
+compile_translation.target = compile_translation
+compile_translation.depends = $$TRANSLATIONS
+compile_translation.commands = lrelease $$TARGET.pro
+QMAKE_EXTRA_TARGETS += compile_translation
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,4 +1,3 @@
-// databasemanager.cpp
 #include "databasemanager.h"
 #include <QSqlQuery>
 #include <QDate>
@@ -36,11 +35,6 @@ bool DatabaseManager::createTable(const QString &tableName, const QString &table
 
 bool DatabaseManager::insertPerson(const QString &login, const QString &password, const QString &cin, const QString &role)
 {
-    /*if (!m_database.isOpen()) {
-        qDebug() << "Database is not open!";
-        return false;
-    }*/
-
     QSqlQuery query;
     query.prepare("INSERT INTO personnes (login, motdepasse, cin, role) VALUES (:login, :password, :cin, :role)");
     query.bindValue(":login", login);
@@ -52,7 +46,6 @@ bool DatabaseManager::insertPerson(const QString &login, const QString &password
 
 bool DatabaseManager::verifierAuthentification(const QString &login, const QString &motDePasse)
 {
-    // Requête pour vérifier l'authentification
     QSqlQuery query;
     query.prepare("SELECT * FROM personnes WHERE login = :login AND motdepasse = :motdepasse");
     query.bindValue(":login", login);
@@ -82,11 +75,6 @@ QString DatabaseManager::getRole(const QString &login, const QString &password)
 
 bool DatabaseManager::insertProduct(const QString &designation, double price, int quantity)
 {
-    /*if (!m_database.isOpen()) {
-        qDebug() << "Database is not open!";
-        return false;
-    }*/
-
     QSqlQuery query;
     query.prepare("INSERT INTO produits (designation, prix, quantitestock) VALUES (:designation, :price, :quantity)");
     query.bindValue(":designation", designation);
@@ -100,15 +88,8 @@ QList<Produit> DatabaseManager::selectProducts()
 {
     QList<Produit> productList;
 
-    // Vérifiez que la connexion à la base de données est ouverte
-    /*if (!m_database.isOpen()) {
-        qDebug() << "Database is not open!";
-        return productList;
-    }*/
-
     QSqlQuery query("SELECT * FROM produits");
 
-    // Exécutez la requête
     if (!query.exec()) {
         qDebug() << "Failed to execute query:";
         return productList;
@@ -134,11 +115,9 @@ QList<Serveur> DatabaseManager::selectServers()
         while (query.next()) {
             QString login = query.value("login").toString();
             QString cin = query.value("cin").toString();
-            // Add other attributes as needed
 
-            // Create Serveur object and add it to the list
-            Serveur serveur(login, cin); // Create Serveur object with login and cin
-            serverList.append(serveur); // Add Serveur object to the list
+            Serveur serveur(login, cin);
+            serverList.append(serveur);
         }
     } else {
         qDebug() << "Error executing SQL query:";
@@ -149,11 +128,6 @@ QList<Serveur> DatabaseManager::selectServers()
 
 bool DatabaseManager::dropTable(const QString &tableName)
 {
-    /*if (!m_database.isOpen()) {
-        qDebug() << "Database is not open!";
-        return false;
-    }*/
-
     QSqlQuery query;
     query.prepare("DROP TABLE IF EXISTS " + tableName);
     return query.exec();
@@ -163,11 +137,9 @@ QSqlQuery DatabaseManager::selectProductDetails(const QString &productCode)
 {
     QSqlQuery query;
 
-    // Préparer la requête SQL pour sélectionner les détails du produit en fonction de son code
     query.prepare("SELECT * FROM produits WHERE codeproduit = :code");
     query.bindValue(":code", productCode);
 
-    // Exécuter la requête
     if (!query.exec()) {
         qDebug() << "Error executing SQL query";
     }
@@ -181,7 +153,6 @@ QStringList DatabaseManager::selectProductCodes()
 
     QSqlQuery query("SELECT DISTINCT codeproduit FROM produits");
 
-    // Exécuter la requête
     if (!query.exec()) {
         qDebug() << "Error executing SQL query:";
         return productCodes;
@@ -197,14 +168,12 @@ bool DatabaseManager::updateProduct(const QString &productCode, const QString &n
 {
     QSqlQuery query;
 
-    // Préparer la requête SQL pour mettre à jour les détails du produit
     query.prepare("UPDATE produits SET designation = :designation, prix = :price, quantitestock = :quantity WHERE codeproduit = :code");
     query.bindValue(":designation", newDesignation);
     query.bindValue(":price", newPrice);
     query.bindValue(":quantity", newQuantity);
     query.bindValue(":code", productCode);
 
-    // Exécuter la requête
     return query.exec();
 }
 
@@ -297,7 +266,6 @@ bool DatabaseManager::insertCommand(int idServeur, QString productId, int quanti
     }
     int newQuantity = getStockQuantity(productId) - quantity;
 
-    // Préparez la requête pour mettre à jour la quantité du produit
     query.prepare("UPDATE produits SET quantitestock = :newQuantity WHERE codeproduit = :productId");
     query.bindValue(":newQuantity", newQuantity);
     query.bindValue(":productId", productId);
@@ -335,7 +303,7 @@ int DatabaseManager::getStockQuantity(const QString &productId) const
         return query.value(0).toInt();
     } else {
         qDebug() << "Failed to get stock quantity for product with ID:" << productId;
-        return -1; // Valeur par défaut en cas d'échec
+        return -1;
     }
 }
 
@@ -367,16 +335,13 @@ QList<QPair<QString, QString>> DatabaseManager::selectProductCodesAndNames()
 {
     QList<QPair<QString, QString>> productCodesAndNames;
 
-    // Préparer la requête SQL pour sélectionner les codes de produits et leurs noms
     QSqlQuery query("SELECT codeproduit, designation FROM produits");
 
-    // Exécuter la requête
     if (!query.exec()) {
         qDebug() << "Error executing SQL query:";
         return productCodesAndNames;
     }
 
-    // Parcourir les résultats de la requête et ajouter les paires ID-Nom à la liste
     while (query.next()) {
         QString productId = query.value("codeproduit").toString();
         QString productName = query.value("designation").toString();
@@ -569,7 +534,7 @@ QList<QPair<QPair<int, QString>, QPair<double, QString>>> DatabaseManager::selec
             int idServeur = query.value(0).toInt();
             QString loginServeur = query.value(1).toString();
             double totalParJournee = query.value(2).toDouble();
-            QString date = query.value(3).toDate().toString("dd/MM/yyyy"); // Formater la date au format "dd/MM/yyyy"
+            QString date = query.value(3).toDate().toString("dd/MM/yyyy");
 
             recettes.append(qMakePair(qMakePair(idServeur, loginServeur), qMakePair(totalParJournee, date)));
         }
@@ -597,13 +562,8 @@ QList<int> DatabaseManager::selectRecetteCodes() const
 
 bool DatabaseManager::updateRecette(int codeRecette, int idServeur)
 {
-    // Assurez-vous d'importer les bibliothèques nécessaires pour la gestion de la base de données
-    // et d'initialiser correctement votre connexion à la base de données
-
     QSqlQuery query;
 
-    // Exécutez votre requête SQL pour mettre à jour les champs nécessaires
-    // Assurez-vous d'adapter la requête à votre schéma de base de données
     query.prepare("UPDATE recettes SET idServeur = :idServeur WHERE codeRecette = :codeRecette");
 
     query.bindValue(":idServeur", idServeur);
@@ -647,4 +607,90 @@ bool DatabaseManager::deleteRecette(int codeRecette)
     }
 
     return true;
+}
+
+QString DatabaseManager::selectRecettesForDate(const QDate &date)
+{
+    QString totalParJournee = "0";
+
+    QSqlQuery query;
+
+    query.prepare("SELECT sum(totalparjournee) FROM recettes WHERE date = ?");
+    query.addBindValue(date.toString("yyyy-MM-dd"));
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query";
+        return totalParJournee;
+    }
+
+    while (query.next()) {
+        totalParJournee = query.value(0).toString();
+    }
+    if(totalParJournee == ""){
+        totalParJournee = "0";
+    }
+    return totalParJournee;
+}
+
+QString DatabaseManager::selectRecettesForMonth(const QDate &date)
+{
+    QString totalParMois = "0";
+
+    QSqlQuery query;
+
+    query.prepare("SELECT SUM(totalparjournee) FROM recettes WHERE strftime('%m', date) = ? AND strftime('%Y', date) = ?");
+    query.addBindValue(date.toString("MM"));
+    query.addBindValue(date.toString("yyyy"));
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query";
+        return totalParMois;
+    }
+
+    while (query.next()) {
+        totalParMois = query.value(0).toString();
+    }
+    if(totalParMois == ""){
+        totalParMois = "0";
+    }
+    return totalParMois;
+}
+
+QString DatabaseManager::selectRecettesForServerAndDate(int idServeur, const QDate &date)
+{
+    QString totalRecettes = "0";
+
+    QSqlQuery query;
+
+    query.prepare("SELECT SUM(totalparjournee) FROM recettes WHERE idServeur = :idServeur AND date = :date");
+    query.bindValue(":idServeur", idServeur);
+    query.bindValue(":date", date);
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query";
+        return totalRecettes;
+    }
+
+    while (query.next()) {
+        totalRecettes = query.value(0).toString();
+    }
+
+    if(totalRecettes.isEmpty()){
+        totalRecettes = "0";
+    }
+
+    return totalRecettes;
+}
+
+bool DatabaseManager::tableExists(const QString& tableName) {
+    QSqlQuery query;
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:tableName;");
+    query.bindValue(":tableName", tableName);
+
+    if (query.exec() && query.next()) {
+        QString existingTableName = query.value(0).toString();
+        return existingTableName == tableName;
+    }
+
+    return false;
 }
